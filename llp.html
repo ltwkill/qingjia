@@ -1,0 +1,600 @@
+<!DOCTYPE html><html class="pixel-ratio-1"><head>
+    <meta charset="UTF-8">
+    <title>请假详情</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <!-- REQUIRED CSS -->
+    <link rel="stylesheet" href="/static/weui/lib/weui.min.css">
+    <link rel="stylesheet" href="/static/weui/css/jquery-weui.css">
+    <link rel="stylesheet" href="/static/weui/css/demos.css">
+    
+    
+    <!-- REQUIRED JS SCRIPTS -->
+    
+    
+    <script type="text/javascript" src="/static/weui/lib/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="/static/weui/lib/fastclick.js"></script>
+    <script type="text/javascript" src="/static/weui/js/jquery-weui.js"></script>
+    <script type="text/javascript" src="/static/weui/js/swiper.js"></script>
+    <script type="text/javascript" src="/static/weui/js/style.js"></script>
+    <script type="text/javascript" src="/static/js/comm.js"></script>
+    <script type="text/javascript" src="/static/js/exif.js"></script>
+    <script type="text/javascript" src="/static/cryptoJS/crypto-js-4.0.0.js"></script>
+    
+    <!-- ΢   js-sdk -->
+    <!--<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>-->
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.6.0.js?v=1"></script>
+    <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js?v=1"></script>
+    <style>
+        body{
+            -webkit-text-size-adjust: 100% ;
+        }
+        .tag{
+            width: 70px;
+            height: 40px;
+            line-height: 40px;
+            position: fixed;
+            bottom: 300px;
+            background-color: dodgerblue;
+            right: 0;
+            border-radius: 20px 0px 0px 20px;
+            z-index: 999;
+        }
+        .ishide{
+            display: none;
+        }
+        .tag1{
+            width: 21px !important;
+        }
+    </style>
+    
+    <style id="__WXWORK_INNER_SCROLLBAR_CSS">::-webkit-scrollbar { width: 12px !important; height: 12px !important; }::-webkit-scrollbar-track:vertical {  }::-webkit-scrollbar-thumb:vertical { background-color: rgba(136, 141, 152, 0.5) !important; border-radius: 10px !important; background-clip: content-box !important; border:2px solid transparent !important; } ::-webkit-scrollbar-track:horizontal {  }::-webkit-scrollbar-thumb:horizontal { background-color: rgba(136, 141, 152, 0.5) !important; border-radius: 10px !important; background-clip: content-box !important; border:2px solid transparent !important; } ::-webkit-resizer { display: none !important; }</style></head><body><div class="tag">
+        <div id="div2021" style="float: left;width: 20px;font-size: 12px;text-align: center">
+            <div style="border-radius: 12px;width: 12px;height: 12px;background-color: white;margin-top: 14px;margin-left: 5px;"></div>
+    
+        </div>
+        <div id="div2022" class="" style="float: left;width: 39px;font-size: 12px;color: white;text-align: center">
+           <span id="fanhui2022">返回</span>
+        </div>
+    
+    </div>
+    
+    <script>
+        var keyParam="a0df333ebedd4860bc06e80b";
+        // 初始化
+        //var vConsole = new VConsole();
+        //alert(vConsole);
+    
+        Number.prototype.toFixed=function (d) {
+            var s=this+"";
+            if(!d)d=0;
+            if(s.indexOf(".")==-1)s+=".";
+            s+=new Array(d+1).join("0");
+            if(new RegExp("^(-|\\+)?(\\d+(\\.\\d{0,"+(d+1)+"})?)\\d*$").test(s)){
+                var s="0"+RegExp.$2,pm=RegExp.$1,a=RegExp.$3.length,b=true;
+                if(a==d+2){
+                    a=s.match(/\d/g);
+                    if(parseInt(a[a.length-1])>4){
+                        for(var i=a.length-2;i>=0;i--){
+                            a[i]=parseInt(a[i])+1;
+                            if(a[i]==10){
+                                a[i]=0;
+                                b=i!=1;
+                            }else break;
+                        }
+                    }
+                    s=a.join("").replace(new RegExp("(\\d+)(\\d{"+d+"})\\d$"),"$1.$2");
+    
+                }if(b)s=s.substr(1);
+                return (pm+s).replace(/\.$/,"");
+            }return this+"";
+    
+        };
+    
+        (function() {
+            if (typeof WeixinJSBridge == "object" && typeof WeixinJSBridge.invoke == "function") {
+                handleFontSize();
+            } else {
+                if (document.addEventListener) {
+                    document.addEventListener("WeixinJSBridgeReady", handleFontSize, false);
+                } else if (document.attachEvent) {
+                    document.attachEvent("WeixinJSBridgeReady", handleFontSize);
+                    document.attachEvent("onWeixinJSBridgeReady", handleFontSize);
+                }
+            }
+            function handleFontSize() {
+                WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+                WeixinJSBridge.on('menu:setfont', function() {
+                    WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize' : 0 });
+                });
+            }
+        })();
+    
+        $("#div2021").click(function () {
+            if ($("#div2022").hasClass("ishide")){
+                $("#div2022").removeClass("ishide")
+                $(".tag").removeClass("tag1")
+            }else {
+                $("#div2022").addClass("ishide")
+                $(".tag").addClass("tag1")
+            }
+        })
+    
+        var startX,startY,sX,sY,moveX,moveY;
+        var winW=$(window).width();
+        var winH=$(window).height();
+        var contH=$(".tag").height();
+        $(function () {
+            $(".tag").on({
+                touchstart:function(e){
+                   // startX = e.originalEvent.targetTouches[0].pageX;    //获取点击点的X坐标
+                    startY = e.originalEvent.targetTouches[0].pageY;    //获取点击点的Y坐标
+                     //console.log("startX="+startX+"************startY="+startY);
+                    // sX=$(this).offset().left;//相对于当前窗口X轴的偏移量
+                     sY=$(this).offset().top;//相对于当前窗口Y轴的偏移量
+                    // console.log("sX="+sX+"***************sY="+sY);
+                    // leftX=startX-sX;//鼠标所能移动的最左端是当前鼠标距div左边距的位置
+    
+                     topY=startY-sY;//鼠标所能移动最上端是当前鼠标距div上边距的位置
+    
+                     bottomY=winH-contH+topY;//鼠标所能移动最下端是当前窗口距离减去鼠标距div最下端位置
+                },
+                touchmove:function(e){
+                   // console.log(e);
+                    e.preventDefault();
+                  //  moveX=e.originalEvent.targetTouches[0].pageX;//移动过程中X轴的坐标
+                    moveY=e.originalEvent.targetTouches[0].clientY;//移动过程中Y轴的坐标
+                  //  console.log(moveY);
+                   // if(moveX<leftX){moveX=leftX;}
+                    if(moveY<topY){moveY=topY;}
+                    if(moveY>bottomY){moveY=bottomY;}
+                    $(this).css({
+                    "top":moveY+sY-startY,
+                     })
+    
+                }
+            })
+        })
+    
+        $("#fanhui2022").click(function () {
+            history.go(-1);
+        })
+    
+    </script><style type="text/css">
+        .weui-form-preview__label{
+            color:#130101;
+        }
+        .weui-form-preview__bd{
+        color:#130101;
+        }
+        .weui-media-box__desc{
+            line-height: 1;
+            display: block;
+        }
+        .weui-gallery{
+          height: 100%;
+          background-size: cover;
+          overflow: auto;
+          width: 100%;
+        }
+        .weui-gallery__img{
+          width: 100%;
+          padding-bottom: 60px;
+        }
+        .weui-gallery__img1{
+          width: 100%;
+          padding-bottom: 60px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 60px;
+          left: 0;
+          background: 50% no-repeat;
+          background-size: contain;
+        }
+        .weui-gallery__img2{
+          width: 100%;
+          padding-bottom: 60px;
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 60px;
+          left: 0;
+          background: 50% no-repeat;
+          background-size: contain;
+        }
+        .weui-gallery__opr{
+          position: fixed;
+        }
+        .delete-btn {
+          position: absolute;
+          background-color: red;
+          color: white;
+          border: none;
+          border-radius: 50%;
+          opacity: 1;
+          transition: opacity 0.3s ease;
+          margin-left: -10px;
+          margin-top: -64px;
+          width: 15px;
+          height: 15px;
+        }
+    </style>
+      <script type="text/javascript" src="/static/js/dateUtil.js"></script>
+      <script type="text/javascript" src="/static/js/ImgUploadUtils.js"></script>
+      <script type="text/javascript" src="/static/js/MegaPixImage.js"></script>
+    
+    
+        <div class="weui-form-preview">
+          <div class="weui-form-preview__hd">
+            <div class="weui-form-preview__item">
+              <label contenteditable="true" class="weui-form-preview__label" id="qingjia">xxx的请假</label>
+                  <script>
+                    var qingjia1 = document.getElementById("qingjia").textContent
+                    // document.title = qingjia1;
+                  </script>
+              </html>
+              
+            </div>
+          </div>
+          <div class="weui-form-preview__bd" id="lists">
+            <div class="weui-form-preview__item">
+              <label contenteditable="true" class="weui-form-preview__label">单据编号: 随便编15位数</label>
+              <input type="hidden" id="app_code" name="app_code" value="240925081619001">
+              <span class="weui-form-preview__value"></span>
+            </div>
+            <div class="weui-form-preview__item">
+              <label class="weui-form-preview__label">审核状态: 审批通过</label>
+              <span class="weui-form-preview__value"></span>
+            </div>
+              <div class="weui-form-preview__item">
+              <label contenteditable="true" class="weui-form-preview__label">部门名称: 班级<br>请假类型: 事假<br>开始时间: 2024-09-26 08:30<br>结束时间: 2025-3-25 13:00<br>请假原因: 原因<br>请假天数: 1</label>
+              <span class="weui-form-preview__value"></span>
+            </div>
+    
+            <div class="weui-form-preview__item">
+                <label class="weui-form-preview__label">附件: </label>
+                <div class="weui-cell">
+                  <div class="weui-cell__bd">
+                    <input type="hidden" name="picpath0" id="picpath0" value="">
+                    <label style="display: block;height: 60px;">
+                      <img src="/static/images/shangchuan.png" style="width: 60px;height: 60px;" onerror="javascript:this.src='/static/images/shangchuan.png'">
+                    </label>
+                  </div>
+                  <div class="weui-cell__bd">
+                    <input type="hidden" name="picpath1" id="picpath1" value="">
+                    <label style="display: block;height: 60px;">
+                      <img src="/static/images/shangchuan.png" style="width: 60px;height: 60px;" onerror="javascript:this.src='/static/images/shangchuan.png'">
+                    </label>
+                  </div>
+                  <div class="weui-cell__bd">
+                    <input type="hidden" name="picpath2" id="picpath2" value="">
+                    <label style="display: block;height: 60px;">
+                      <img src="/static/images/shangchuan.png" style="width: 60px;height: 60px;" onerror="javascript:this.src='/static/images/shangchuan.png'">
+                    </label>
+                  </div>
+                </div>
+                <div class="weui-cell__bd" style="display: inline;margin-left: 80px;">
+                  <span class="weui-btn weui-btn_mini weui-btn_default" onclick="lookFile();">查看附件</span>
+                </div>
+              <span class="weui-form-preview__value"></span>
+            </div>
+    
+            <div class="weui-gallery" style="display: none;" id="img_gallery">
+              <img class="weui-gallery__img" id="img_span">
+              <img class="weui-gallery__img1" id="img_span1">
+              <img class="weui-gallery__img2" id="img_span2">
+              <div class="weui-gallery__opr">
+                <i class="weui-gallery__del" style="font-size: 20px;font-weight: bolder;" onclick="closeGallery();">关闭</i>
+              </div>
+            </div>
+    
+          <div class="weui-form-preview__item"><label class="weui-form-preview__label">审批流程：</label></div><div class="weui-form-preview__item"><label class="weui-form-preview__label"><span contenteditable="true">xxx</span><span contenteditable="true" style="display: block;float: right;">2024-09-25 08:16:19</span></label><p class="weui-media-box__desc">已通过</p></div><div class="weui-form-preview__item"><label class="weui-form-preview__label"><span>宗家清</span><span contenteditable="true" style="display: block;float: right;">2024-09-25 08:26:28</span></label><p class="weui-media-box__desc">已通过</p></div></div>
+          <div class="weui-form-preview__ft" id="cx" style="">
+            <input type="hidden" value="2" id="status">
+            <input type="hidden" value="刘庭洧" id="emp_name">
+            <a class="weui-form-preview__btn weui-form-preview__btn_primary" style="color:gray" href="javascript:" onclick="reviewApproval('1','240925081619001','19195448483','刘庭洧','3','部门名称: 23108<br></a>请假类型: 事假<br/>开始时间: 2024-09-25 08:30<br/>结束时间: 2024-09-25 13:00<br/>请假原因: 换药<br/>请假天数: 1','刘庭洧的请假')">撤销</a>
+          </div>
+        </div>
+        <br>
+        <script type="text/javascript">
+          var intervalId;
+        window.onload =function(){
+          //有图片的加删除按钮
+          imgAddDel();
+            var app_code = $("#app_code").val();
+            $.ajax({
+                url : '/approval/getAppInformation.htm',
+                data : {
+                    'appType' : 1,
+                    'appCode' : app_code,
+                },
+                type : "POST",
+                dataType : "json",
+                success : function(msg) {
+                    if (msg.returnCode == 1) {
+                        var res = new Array();
+                        res = JSON.parse(msg.result);
+                         $("#lists").append( '<div class="weui-form-preview__item">' 
+                                 +'<label class="weui-form-preview__label">审批流程：</label>'
+                                  +'</div>' 
+                        )
+                        for(var i=0;i<res.length;i++){
+                            if(res[i].status == 0){
+                                 $("#lists").append(  
+                                           '<div class="weui-form-preview__item">'  
+                                            +'<label class="weui-form-preview__label"><span>'+res[i].approve_name+'</span><span style="display: block;float: right;">'+      res[i].apply_date+'</span></label>'
+                                            +'<p class="weui-media-box__desc">未审核</p>'
+                                            +'</div>'  
+                                       )  
+                            }
+                            if(res[i].status == 1){
+                                 $("#lists").append(  
+                                           '<div class="weui-form-preview__item">'  
+                                            +'<label class="weui-form-preview__label"><span>'+res[i].approve_name+'</span><span style="display: block;float: right;">'+      res[i].apply_date+'</span></label>'
+                                            +'<p class="weui-media-box__desc">已通过</p>'
+                                            +'</div>'  
+                                       )  
+                            }
+                            if(res[i].status == 2){
+                                 $("#lists").append(  
+                                           '<div class="weui-form-preview__item">'  
+                                            +'<label class="weui-form-preview__label"><span>'+res[i].approve_name+'</span><span style="display: block;float: right;">'+      res[i].apply_date+'</span></label>'
+                                            +'<p class="weui-media-box__desc">已驳回</p>'
+                                            +'</div>'  
+                                       )  
+                            }
+                            if(res[i].status == 3){
+                                 $("#lists").append(  
+                                           '<div class="weui-form-preview__item">'  
+                                            +'<label class="weui-form-preview__label"><span>'+res[i].approve_name+'</span><span style="display: block;float: right;">'+      res[i].apply_date+'</span></label>'
+                                            +'<p class="weui-media-box__desc">已撤销</p>'
+                                            +'</div>'  
+                                       )  
+                            }
+                        }
+                        if (res.length>0) {
+                            isShowCx(res[res.length-1],res[0]);
+                        }
+    
+    
+                    } else {
+                        if(msg.returnCode ==0){
+                             window.location.href = "/httpError.htm";
+                        }
+                        /* $.toast(msg.result,"cancel", function() {
+    
+                        }); */
+                    }
+                },
+                error : function(error) {
+                    $.hideLoading();
+                    $.alert(error)
+                }
+    
+            });
+        }
+            function reviewApproval(app_type,app_code,apply_code,apply_name,is_pass,context,title){
+              var picpath0 = $("#picpath0").val();
+              var picpath1 = $("#picpath1").val();
+              var picpath2 = $("#picpath2").val();
+              var picpath='';
+              if(picpath0 != null && picpath0 != ''){
+                picpath += picpath0;
+              }
+              if(picpath1 != null && picpath1 != ''){
+                if(picpath != null && picpath != ''){
+                  picpath += ','+picpath1;
+                }else{
+                  picpath += picpath1;
+                }
+              }
+              if(picpath2 != null && picpath2 != ''){
+                if(picpath != null && picpath != ''){
+                  picpath += ','+picpath2;
+                }else{
+                  picpath += picpath2;
+                }
+              }
+                if(is_pass==1){
+                    $.ajax({
+                        url : '/approval/reviewApproval.htm',
+                        data : {
+                            'appType' : app_type,
+                            'appCode' : app_code,
+                            'applyCode' : apply_code,
+                            'applyName' : apply_name,
+                            'isPass' : is_pass,
+                            'context' : context,
+                            'title' :title,
+                            'picpath' :picpath,
+                        },
+                        type : "POST",
+                        dataType : "json",
+                        success : function(msg) {
+                            if (msg.returnCode == 1) {
+                                $.hideLoading();
+                                $.toast("操作成功", function() {
+                                    //刷新列表页
+                                     window.location.href="/approval/getApprovalList.htm?status=0";
+                                });
+                            } else {
+                                if(msg.returnCode ==0){
+                                         window.location.href = "/httpError.htm";
+                                    }else{
+                                    $.toast(msg.result,"cancel", function() {
+    
+                                    });
+                                    }
+                            }
+                        },
+                        error : function(error) {
+                            $.hideLoading();
+                            $.alert(error)
+                        }
+    
+                    });
+                }else{
+                    $.modal({
+                        text: '<p class="weui-prompt-text"></p><textarea   rows="5" cols="25"  id="opinion"></textarea> ',
+                        title: "请输入审批意见",
+                        buttons: [{
+                            text: "取消",
+                            className: "primary",
+                            onClick: function () {
+                                  $.closeModal();
+                            }
+                        }
+                            ,{
+                                text: "确定",
+                                className: "primary",
+                                onClick: function () {
+                                    var opinion = $("#opinion").val();
+                                    if(opinion == ""){
+                                        $.alert("审批意见不能为空");
+                                        return false;
+                                    }
+                                    $.ajax({
+                                        url : '/approval/reviewApproval.htm',
+                                        data : {
+                                            'appType' : app_type,
+                                            'appCode' : app_code,
+                                            'applyCode' : apply_code,
+                                            'applyName' : apply_name,
+                                            'isPass' : is_pass,
+                                            'context' : context,
+                                            'title' :title,
+                                            'opinion' : opinion,
+                                            'picpath' :picpath
+                                        },
+                                        type : "POST",
+                                        dataType : "json",
+                                        success : function(msg) {
+                                            if (msg.returnCode == 1) {
+                                                $.hideLoading();
+                                                $.toast("操作成功", function() {
+                                                    //刷新列表页
+                                                     window.location.href="/approval/getApprovalList.htm?status=0";
+                                                });
+                                            } else {
+                                                    if(msg.returnCode ==0){
+                                                            window.location.href = "/httpError.htm";
+                                                       }else{
+                                                        $.toast(msg.result,"cancel", function() {
+            
+                                                        });
+                                                       }
+                                            }
+                                        },
+                                        error : function(error) {
+                                            $.hideLoading();
+                                            $.alert(error)
+                                        }
+    
+                                    });
+                                }
+                            }
+                        ]
+                    });
+                }
+            }
+    
+        //审核完后撤销，或发起人撤销
+        function isShowCx(res,res0) {
+            console.log(res);
+            if ($("#status").length>0) {
+                var status=$("#status").val();
+                var emp_name=$("#emp_name").val();
+                if (status=='2') {
+                    if(res.status == 1 || res.status == 2 ){
+                        var apply_date=res.apply_date;
+                        var day=getDaysBetween(apply_date.replace(/\-/g,"/"),new Date().format("yyyy-MM-dd").replace(/\-/g,"/"));//审核完成后15天内可撤销
+                        if (day<15) {
+                            $("#cx").show();
+                        }
+                    }else {
+                        if (res0.status != 3) {
+                            $("#cx").show();
+                        }
+                    }
+                }else {
+                  if(res.status == 1){
+                    var AcceptAllowBackBySHR = '';
+                    if(AcceptAllowBackBySHR == '1'){
+                      var apply_date=res.apply_date;
+                      var approve_name=res.approve_name;
+                      if (approve_name.indexOf(emp_name) !== -1) {
+                        var day=getDaysBetween(apply_date.replace(/\-/g,"/"),new Date().format("yyyy-MM-dd").replace(/\-/g,"/"))
+                        if (day<15) {
+                          $("#cx").show();
+                        }
+                      }
+                    }
+                  }
+                }
+            }
+        }
+        function lookFile() {
+          var url = 'http://ykt.gcglxt.com'+$('#picpath0').val();
+          var url1 = 'http://ykt.gcglxt.com'+$('#picpath1').val();
+          var url2 = 'http://ykt.gcglxt.com'+$('#picpath2').val();
+          $('#img_span').attr('src', url);
+          $('#img_span').height();
+    
+          var h=0, h1=0, h2=0;
+          intervalId = setInterval(function () {
+            var base64 = $("#img_span").attr("src");
+            var base641 = $("#img_span1").attr("src");
+            var base642 = $("#img_span2").attr("src");
+            var src = 'http://ykt.gcglxt.com';
+            if(base64 != null && base64 != '' && base64 != src){
+              h = $('#img_span').height();
+            }
+            if(base641 != null && base641 != '' && base641 != src){
+              h1 = $('#img_span1').height();
+            }
+            if(base642 != null && base642 != '' && base642 != src){
+              h2 = $('#img_span2').height();
+            }
+            if(base64 == null || base64 == '' && base64 != src){
+              h = 0;
+            }
+            if(base641 == null || base641 == '' && base641 == src){
+              h1 = 0;
+            }
+            $('.weui-gallery__img1').css('top', h+10);
+            $('.weui-gallery__img2').css('top', h + h1 + 20);
+            console.log('h:', h);
+            console.log('h1:', h1);
+            console.log('h2:', h2);
+          }, 500);
+          $('#img_span1').attr('src', url1);
+          $('#img_span2').attr('src', url2);
+          $('#img_gallery').show();
+        }
+        function closeGallery() {
+          clearInterval(intervalId);
+          $('#img_gallery').hide();
+        }
+        function imgAddDel(){
+          if("2" == '0'){
+            var picpath0 = '';
+            var picpath1 = '';
+            var picpath2 = '';
+            if(picpath0 != null && picpath0 != ''){
+              $("#uploadImg0").parent().append("<button type='button' class=\"delete-btn\" id='deleteBtn_0' onclick='delImg(0)'>&times;</button>");
+            }
+            if(picpath1 != null && picpath1 != ''){
+              $("#uploadImg1").parent().append("<button type='button' class=\"delete-btn\" id='deleteBtn_1' onclick='delImg(1)'>&times;</button>");
+            }
+            if(picpath2 != null && picpath2 != ''){
+              $("#uploadImg2").parent().append("<button type='button' class=\"delete-btn\" id='deleteBtn_2' onclick='delImg(2)'>&times;</button>");
+            }
+          }
+        }
+        </script>
+    
+    </body></html>
